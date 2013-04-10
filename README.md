@@ -37,6 +37,29 @@ Ember.factory.create('post').properties
 ## use factories in testing
 
 post = Ember.factory_for('post')
+
+# multiple
+
+posts = Ember.factories_for('post', 2)
+```
+
+Note that when you create multiple models, you will pass the index as an argument to any factory function, so you can fx change `email` to:
+
+```coffeescript
+Ember.factory.create('post').properties
+  email: (n) ->
+    "email#{n || 1}@gmail.com"
+```
+
+And it should create posts with `['email1@gmail.com', 'email2@gmail.com']
+
+For global counting, use the `Ember.factory.counter('posts')`
+Note that when the factory instantiates a model, it creates an `f` property pointing to the factory class, so you can use the factory class method from your model in case you have special factory methods there. You can also use f inside your usual factory methods:
+
+```coffeescript
+Ember.factory.create('post').properties
+  email: (n) ->
+    "email#{f.count('emails')}@gmail.com"
 ```
 
 Enjoy :)
