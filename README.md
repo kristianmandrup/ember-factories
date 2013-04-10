@@ -41,6 +41,8 @@ post = Ember.factory_for('post')
 
 Enjoy :)
 
+PS: Please review and help improve the code...
+
 ## Contributing
 
 1. Fork it

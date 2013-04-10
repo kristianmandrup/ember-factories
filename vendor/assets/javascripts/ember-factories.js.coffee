@@ -3,7 +3,7 @@ Ember.applicationClass = App
 Ember.factory = Ember.Object.extend
   init: (type) ->
     # get model class from camelized type name
-    @type = Ember.camelize(type)  
+    @type = type.camelize()
 
   properties: (hash)
     @hash = hash
@@ -12,23 +12,33 @@ Ember.factory = Ember.Object.extend
     @
 
   setup: ->
-    @type = Ember.applicationClass[@type]
+    # create empty model instance
+    @type = _modelClass().create
+
+    # set model attributes using factory properties
     for key, value in @hash 
-      @type[key] = _resolveValue(value)
+      @type.set key, _resolveValue(value)
+    # finally return model instance setup using factory :)
     @type
 
+  # TODO: How to improve this!? 
+  _modelClass: ->
+    Ember.applicationClass[@type]
+
   _resolveValue: (value) ->
-    case Ember.typeOf(value)
+    switch Ember.typeOf(value)
     when 'function'
-      value.call
+      # lazy evaluated factory value :)
+      value.call()
     else
       value
 
+# Map of registered factories!
 Ember.factories = Ember.Map.extend
   register: (factory) ->
     @set factory.type, factory
   find: (type) ->
-    @get Ember.camelize(type)
+    @get type.camelize()
 
 Ember.factory_for = (type) ->
   Ember.factories.find(type).setup
